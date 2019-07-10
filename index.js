@@ -50,6 +50,14 @@ async function generatePDF(ctx, port, host) {
   const tempDir = join(tempPath, 'pdf')
   fs.ensureDirSync(tempDir)
 
+  const exportPdfOrder = siteConfig.exportPdfOrder || null
+
+  if(exportPdfOrder) {
+    pages.sort((page1, page2) => {
+      return exportPdfOrder.indexOf(page1.relativePath) - exportPdfOrder.indexOf(page2.relativePath)
+    })
+  }
+
   const exportPages = pages.map(page => {
     return {
       url: page.path,
