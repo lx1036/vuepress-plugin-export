@@ -46,12 +46,16 @@ module.exports = (opts = {}, ctx) => ({
 })
 
 async function generatePDF(ctx, port, host) {
-  const { pages, tempPath, siteConfig } = ctx
+  let { pages, tempPath, siteConfig } = ctx
   const tempDir = join(tempPath, 'pdf')
   fs.ensureDirSync(tempDir)
 
   const exportPdfOrder = siteConfig.exportPdfOrder || null
 
+  // Filter
+  pages = pages.filter(page => exportPdfOrder.indexOf(page.relativePath) !== -1);
+
+  // Sort
   if(exportPdfOrder) {
     pages.sort((page1, page2) => {
       return exportPdfOrder.indexOf(page1.relativePath) - exportPdfOrder.indexOf(page2.relativePath)
